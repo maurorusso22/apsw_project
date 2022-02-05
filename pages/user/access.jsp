@@ -33,8 +33,8 @@
 
           <div class="mb-3">
             <div class="loading">Loading</div>
-            <div class="error-message"></div>
-            <div class="sent-message">Your appointment request has been sent successfully. Thank you!</div>
+            <div class="error-message">Error</div>
+            <div class="sent-message">Sent!</div>
           </div>
           <div class="text-center">
 	          <button type="submit" id="send-cf">Invia</button>

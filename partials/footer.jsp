@@ -56,11 +56,11 @@
 <script type="text/javascript" src="<%= path + "/assets/js/jquery.min.js" %>"></script>
 
 <!-- <!-- Vendor JS Files -->
-<%-- <script src="<%= path + "/assets/vendor/purecounter/purecounter.js"%>"></script> --%>
-<%-- <script src="<%= path + "/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"%>"></script> --%>
-<%-- <script src="<%= path + "/assets/vendor/glightbox/js/glightbox.min.js"%>"></script> --%>
-<%-- <script src="<%= path + "/assets/vendor/swiper/swiper-bundle.min.js"%>"></script> --%>
+<script src="<%= path + "/assets/vendor/purecounter/purecounter.js"%>"></script>
+<script src="<%= path + "/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"%>"></script>
+<script src="<%= path + "/assets/vendor/glightbox/js/glightbox.min.js"%>"></script>
+<script src="<%= path + "/assets/vendor/swiper/swiper-bundle.min.js"%>"></script>
 <%-- <script src="<%= path + "/assets/vendor/php-email-form/validate.js"%>"></script> --%>
 
 <!-- <!-- Template Main JS File -->
-<%-- <script src="<%= path + "/assets/js/main.js"%>"></script> --%>
+<script src="<%= path + "/assets/js/main.js"%>"></script>
