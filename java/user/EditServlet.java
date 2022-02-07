@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/edit")
 public class EditServlet extends HttpServlet {
@@ -30,16 +31,26 @@ public class EditServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String newDate = request.getParameter("newDate");
-		String vacId = request.getParameter("vacId");
-		
-		String sql = "UPDATE Vaccination SET vac_date = ? WHERE id_vaccination = ? ;";
-		List<Object> params = Arrays.asList(newDate, vacId);
-		SQLQuery query = new SQLQuery(sql, params);
+		HttpSession userSession = request.getSession();
+		String sessionType = (String) userSession.getAttribute("type");
 
-		Database.execute(query);
+		if (sessionType != null && sessionType.equals("user")) {
+			
+			String fiscalCode = (String) userSession.getAttribute("id_user");
 		
-		// if no error on db
+			String newDate = request.getParameter("newDate");
+			String vacId = request.getParameter("vacId");
+			
+			String sql = "UPDATE Vaccination SET vac_date = ? WHERE id_vaccination = ? AND id_user = ? ;";
+			List<Object> params = Arrays.asList(newDate, vacId, fiscalCode);
+			SQLQuery query = new SQLQuery(sql, params);
+	
+			Database.execute(query);
+		
+			// if no error on db
+		} else {
+			response.sendError(408);
+		}
 				
 	}
 

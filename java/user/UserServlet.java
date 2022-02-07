@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	// look for the user: if he exists, redirect him to his 'userhome', otherwise redirect him to 'firstaccess' to book a vaccination
 	
 	public UserServlet() {
 		super();
@@ -50,18 +51,6 @@ public class UserServlet extends HttpServlet {
 		} else {
 			response.sendRedirect("http://localhost:8080/apsw_project/pages/error.jsp");
 		}
-				
-		// OLD
-		
-//		if (fiscalCode.endsWith("G273N")) {
-//			response.sendRedirect("http://localhost:8080/apsw_project/pages/user/userlogin.jsp?fc=" + fiscalCode);
-//		} else {
-//			response.sendRedirect("http://localhost:8080/apsw_project/pages/user/booking.jsp?fc=" + fiscalCode);
-//		}
-				
-		// var output = "{\"fiscalCode\": \"" + fiscalCode + "\"}";
-		// response.setContentType("application/json");
-		// out.print(output);
 	}
 
 }

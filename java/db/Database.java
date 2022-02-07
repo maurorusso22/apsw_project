@@ -37,13 +37,10 @@ public class Database {
 					statement = connection.prepareStatement(queries[i].getQuery());
 					var queryParams = queries[i].getParams();
 					setParams(statement, queryParams);
-
-					System.out.println("FULL: " + statement);
 					
 					statement.execute();
 					
 					queries[i].setResult(statement.getResultSet());
-					System.out.println("RESULT-SET: " + queries[i].getResult());
 
 					statement.close();
 				}
