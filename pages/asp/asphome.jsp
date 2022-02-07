@@ -9,6 +9,7 @@
 <%@ page import="jakarta.servlet.ServletException"%>
 <%@ page import="jakarta.servlet.annotation.WebServlet"%>
 <%@ page import="jakarta.servlet.http.HttpServlet"%>
+<%@ page import="jakarta.servlet.http.HttpSession"%>
 <%@ page import="jakarta.servlet.http.HttpServletRequest"%>
 <%@ page import="jakarta.servlet.http.HttpServletResponse"%>
 
@@ -76,6 +77,10 @@
 			
 			if (dbHashedPsw.equals(hashedPassword)) {
 				access = true;
+				HttpSession aspSession = request.getSession();
+				aspSession.setAttribute("type", "asp");
+				aspSession.setAttribute("id_asp", asp_name);
+				aspSession.setMaxInactiveInterval(600);
 			} else {
 				access = false;
 			}
@@ -129,13 +134,9 @@
 			       	<li data-aos="fade-up" style="background-color: #C2C2C2;">
 		             <a data-bs-toggle="collapse" class="collapse" data-bs-target="#newdoc">New doctor<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
 		             <div id="newdoc" class="collapse" data-bs-parent=".faq-list">
-<!-- 		               <p>Cognome</p> -->
-<!-- 		               <p>Nome</p> -->
-<!-- 		               <p>Data di nascita</p> -->
-<!-- 		               <p>Codice Fiscale</p> -->
 									<form action="" role="form" class="php-email-form">
 
-					          <div class="row">
+					          <div class="row mt-3">
 					            <div class="col-md-4 form-group">
 					              <input type="text" name="name" class="form-control" id="name" placeholder="Nome" data-rule="minlen:2" data-msg="Please enter at least 2 chars">
 					              <div class="validate"></div>
@@ -221,8 +222,12 @@
 	 	  	    alert("il dottore " + surname + " " + name + " è stato aggiunto con successo.\nIMPORTANTE: comunica al dottore la sua password: " + res.doc_password)
    	      },
    	      error: function(err) {
-   	        // console.log(err)
-   	        alert("qualcosa è andato storto")
+   	    	  if (err.status === 408) {
+   	    		  alert("Sessione scaduta. Accedi nuovamente.")
+   	   	      window.location.replace("http://localhost:8080/apsw_project/pages/asp/access.jsp")
+   	    	  } else {
+   	        	alert("Qualcosa è andato storto.")
+   	    	  }
    	      }
    	    });
   	}

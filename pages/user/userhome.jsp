@@ -9,6 +9,7 @@
 <%@ page import="jakarta.servlet.ServletException"%>
 <%@ page import="jakarta.servlet.annotation.WebServlet"%>
 <%@ page import="jakarta.servlet.http.HttpServlet"%>
+<%@ page import="jakarta.servlet.http.HttpSession"%>
 <%@ page import="jakarta.servlet.http.HttpServletRequest"%>
 <%@ page import="jakarta.servlet.http.HttpServletResponse"%>
 
@@ -88,6 +89,10 @@
 			
 			if (dbHashedPsw.equals(hashedPassword)) {
 				access = true;
+				HttpSession userSession = request.getSession();
+				userSession.setAttribute("type", "user");
+				userSession.setAttribute("id_user", fiscalCode);
+				userSession.setMaxInactiveInterval(60);
 			} else {
 				access = false;
 			}
@@ -197,9 +202,13 @@
    	        $("#edit_date").val(null)
    	        alert("Data della prenotazione cambiata correttamente")
    	      },
-   	      error: function() {
-   	        // console.log(err)
-   	        alert("qualcosa è andato storto")
+   	      error: function(err) {
+   	    	  if (err.status === 408) {
+   	    		  alert("Sessione scaduta. Accedi nuovamente.")
+   	   	      window.location.replace("http://localhost:8080/apsw_project/pages/user/access.jsp")
+   	    	  } else {
+   	        	alert("Qualcosa è andato storto.")
+   	    	  }
    	      }
    	    });
   	}

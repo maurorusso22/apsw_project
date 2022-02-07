@@ -9,6 +9,7 @@
 <%@ page import="jakarta.servlet.ServletException"%>
 <%@ page import="jakarta.servlet.annotation.WebServlet"%>
 <%@ page import="jakarta.servlet.http.HttpServlet"%>
+<%@ page import="jakarta.servlet.http.HttpSession"%>
 <%@ page import="jakarta.servlet.http.HttpServletRequest"%>
 <%@ page import="jakarta.servlet.http.HttpServletResponse"%>
 
@@ -79,7 +80,6 @@
 		List<List<String>> doctorInfo = query2.getResult();
 		List<List<String>> vaccinations = query3.getResult();
 
-		
 		if (query1.getStatus() == Database.RESULT && !result.isEmpty()) {
 			String dbHashedPsw = result.get(0).get(1);
 			
@@ -88,6 +88,10 @@
 			
 			if (dbHashedPsw.equals(hashedPassword)) {
 				access = true;
+				HttpSession doctorSession = request.getSession();
+				doctorSession.setAttribute("type", "doctor");
+				doctorSession.setAttribute("id_doctor", fiscalCode);
+				doctorSession.setMaxInactiveInterval(600);
 			} else {
 				access = false;
 			}
@@ -103,29 +107,99 @@
 	
 	  <main id="main">
 
-    <!-- ======= Services Section ======= -->
-    <section id="services" class="services">
-      <div class="container">
-
 				<% if (access) { %>
-	        <div class="section-title">
-	          <h2>Dashboard Dottore</h2>
-	          <h3><%= fiscalCode %></h3>
-	          <p>Qui puoi vedere e caricare le vaccinazioni effettuate.</p>
-	        </div>
+					<section id="services" class="services">
+		      	<div class="container">
+			        <div class="section-title">
+			          <h2>Dashboard Dottore</h2>
+			          <h3><%= fiscalCode %></h3>
+			          <p>Qui puoi vedere e caricare le vaccinazioni effettuate.</p>
+			        </div>
+			        
+			        <section id="faq" class="faq section">
+					      <div class="container">
+					        
+					        <div class="faq-list">
+						        <ul>
+							       	<li data-aos="fade-up" style="background-color: #C2C2C2;">
+						             <a data-bs-toggle="collapse" class="collapse" data-bs-target="#newvac">Aggiungi vaccinazione<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+						             <div id="newvac" class="collapse" data-bs-parent=".faq-list">
+													<form action="" role="form" class="php-email-form">
+													
+													  <input hidden="true" type="text" name="doctorFiscalCode" id="doctorFiscalCode" value=<%= fiscalCode %>>
+				
+									          <div class="row mb-3 mt-3">
+									            <div class="col-md-4 form-group">
+									              <input type="text" name="userFiscalCode" class="form-control" id="userFiscalCode" placeholder="Codice fiscale paziente">
+									              <div class="validate"></div>
+									            </div>
+									            <div class="col-md-4 form-group">
+									              <select name="product" id="product" class="form-select">
+									              	<option value="none">Seleziona vaccino</option>
+									                <option value="pfizer">Pfizer</option>
+									                <option value="moderna">Moderna</option>
+									                <option value="janssen">Janssen</option>
+		 							                <option value="astrazeneca">Astrazeneca</option>
+		 							                <option value="novavax">Novavax</option>
+									              </select>
+									              <div class="validate"></div>
+									            </div>
+									          </div>
+									          
+														<div class="text-center">
+														  <button type="button" id="newVacButton">Aggiungi</button>
+														</div>	
+									        </form>	               
+						             </div>
+						           </li>
+						        </ul>
+						      </div>
+					      </div>
+					    </section>
+					  </div>
+	    		</section>
+	    		
+			    <section id="counts" class="counts">
+			      <div class="container">
+			
+			        <div class="row">
+			
+			          <div class="col-lg-3 col-md-6">
+			            <div class="count-box">
+			              <i class="fas fa-user-md"></i>
+			              <span data-purecounter-start="0" data-purecounter-end=<%= vaccinations.size() %> data-purecounter-duration="1" class="purecounter"></span>
+			              <p>Vaccinazioni effettuate</p>
+			            </div>
+			          </div>
+			
+								<div class="col-lg-3 col-md-6 mt-5 mt-lg-0">
+									<a href="#">
+				            <div class="count-box">
+				              <i class="fas fa-flask"></i>
+				              <span>Scarica</span>
+				              <p>Resoconto vaccini effettuati</p>
+				            </div>
+				          </a>
+			          </div>
+			        </div>
+			
+			      </div>
+			    </section>
 	      <% } else { %>
-	      	<div class="section-title">
-	          <h2>Dashboard dottore</h2>
-	          <h3>Accesso negato</h3>
-	          <p>Hai inserito delle credenziali errate.</p>
-	        </div>
-	
-	        <div class="text-center">
-	          <button onclick="history.back()" >Torna indietro</button>
-	        </div>
+		      <section id="services" class="services">
+		      	<div class="container">
+			      	<div class="section-title">
+			          <h2>Dashboard dottore</h2>
+			          <h3>Accesso negato</h3>
+			          <p>Hai inserito delle credenziali errate.</p>
+			        </div>
+			
+			        <div class="text-center">
+			          <button onclick="history.back()" >Torna indietro</button>
+			        </div>
+			      </div>
+	    		</section>
 				<% } %>
-      </div>
-    </section><!-- End Services Section -->
 
   </main><!-- End #main -->
   
@@ -134,44 +208,44 @@
   </jsp:include>
   
   <script>
-  	function httpPost(newDate, vacId) {
+  	function httpPost(doctorFiscalCode, userFiscalCode, product) {
   		$.ajax({
-   	      url: "http://localhost:8080/apsw_project/edit",
+   	      url: "http://localhost:8080/apsw_project/addvac",
    	      type: "post", 
    	      data: {
-   	    	  	newDate: newDate,
-   	          vacId: vacId
+   	    			doctorFiscalCode: doctorFiscalCode,
+   	    			userFiscalCode: userFiscalCode,
+   	    			product: product
    	      },
    	      success: function() {
-   	        $("#last_vac_date").html(newDate)
-   	        $("#edit_date").val(null)
-   	        alert("Data della prenotazione cambiata correttamente")
+   	        $("#doctorFiscalCode").val(null)
+   	        $("#userFiscalCode").val(null)
+   	        $("#product").val(null)
+   	        alert("Vaccinazione aggiunta correttamente")
+   	        window.location.reload()
    	      },
-   	      error: function() {
-   	        // console.log(err)
-   	        alert("qualcosa è andato storto")
+   	      error: function(err) {
+   	    	  if (err.status === 408) {
+   	    		  alert("Sessione scaduta. Accedi nuovamente.")
+   	   	      window.location.replace("http://localhost:8080/apsw_project/pages/doctor/access.jsp")
+   	    	  } else {
+   	        	alert("Qualcosa è andato storto.")
+   	    	  }
    	      }
    	    });
   	}
   	
    	$(document).ready(function () {
- 	  	$("#changeDate").click(function () {
+ 	  	$("#newVacButton").click(function () {
 	  	    
-	 		  let newDate = $("#edit_date").val()
-	 		  let oldDate = $("#last_vac_date").html()
-	 		  let vacId = $("#last_vac_id").html()
+	 		  let doctorFiscalCode = $("#doctorFiscalCode").val()
+	 		  let userFiscalCode = $("#userFiscalCode").val()
+	 		  let product = $("#product").val()
 	
- 	  	  if (!newDate) {
- 	  	    alert("Errore: Selezionare una data.")
+ 	  	  if (!doctorFiscalCode || !userFiscalCode || !product) {
+ 	  	    alert("Errore: Inserire tutti i dati richiesti.")
  	  	  } else {
- 	  		  let nDate = new Date(newDate)
- 	  		  let oDate = new Date(oldDate)
- 	  		  if (nDate > oDate) {
- 	  	        httpPost(newDate, vacId)
- 	  		  } else {
- 	  			  alert("Errore: La nuova data non può essere antecedente quella vecchia")
- 	  		  }
- 	        
+ 	  	  	httpPost(doctorFiscalCode, userFiscalCode, product)
  	  	  } 	 
  	  	})
    	});
