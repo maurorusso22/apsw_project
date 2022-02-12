@@ -41,15 +41,12 @@ public class AddVaccinationServlet extends HttpServlet {
 		
 			String doctorFiscalCode = (String) docSession.getAttribute("id_doctor");
 
-			String userFiscalCode = request.getParameter("userFiscalCode").toUpperCase();
+			String vaccinationId = request.getParameter("vaccinationId").toUpperCase();
 			String product = request.getParameter("product");
 			
-			String update = "UPDATE Vaccination SET id_doctor = ?, product = ?, vac_date = CURRENT_TIMESTAMP() "
-									+ "WHERE id_vaccination = (SELECT * FROM (SELECT id_vaccination "
-									+ "FROM Vaccination "
-									+ "WHERE id_user = ? AND CURRENT_TIMESTAMP() > vac_date AND product IS NULL ORDER BY vac_date DESC LIMIT 1) V); ";
+			String update = "UPDATE Vaccination SET id_doctor = ?, product = ?, vac_date = CURRENT_TIMESTAMP() WHERE id_vaccination = ? ";
 					
-			List<Object> params = Arrays.asList(doctorFiscalCode, product, userFiscalCode);
+			List<Object> params = Arrays.asList(doctorFiscalCode, product, vaccinationId);
 	
 			SQLQuery query = new SQLQuery(update, params);
 	
