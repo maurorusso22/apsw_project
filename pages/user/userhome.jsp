@@ -40,7 +40,7 @@
 		button:hover {
 		  background: #1c84e3;
 		}
-		#changeDate {
+		.bluebutton {
 			margin-top: 16px;
 		  background: #1c84e3;
 		  border: 0;
@@ -49,7 +49,7 @@
 		  transition: 0.4s;
 		  border-radius: 50px;
 		}
-		#changeDate:hover {
+		.bluebutton:hover {
 		  background: #fff;
 		  color: #000;
 		}
@@ -65,7 +65,7 @@
 		
 		String selectCredentials = "SELECT * FROM User_Credentials WHERE fiscal_code = ? ;";
 		String selectUserInfo = "SELECT * FROM Vac_User WHERE fiscal_code = ? ; ";
-		String selectVacInfo = "SELECT * FROM Vaccination WHERE id_user = ? ; ";
+		String selectVacInfo = "SELECT * FROM Vaccination WHERE id_user = ? ORDER BY vac_date DESC; ";
 				
 		List<Object> params = Arrays.asList(fiscalCode);
 	
@@ -92,7 +92,7 @@
 				HttpSession userSession = request.getSession();
 				userSession.setAttribute("type", "user");
 				userSession.setAttribute("id_user", fiscalCode);
-				userSession.setMaxInactiveInterval(60);
+				userSession.setMaxInactiveInterval(600);
 			} else {
 				access = false;
 			}
@@ -100,12 +100,20 @@
 			access = false;
 		}
 		
-		List<String> lastVaccination = vaccinations.get(vaccinations.size()-1);
+		List<String> lastVaccination = vaccinations.get(0);
 		Date now = new Date();
 		Date yesterday = new Date(new Date().getTime() - 86400000);
 		Date lastVaccinationDate = new DateUtilities(lastVaccination.get(4)).getDate();
-		Boolean canUserBook = lastVaccinationDate.before(yesterday);
+		Boolean canUserBook;
+		if (vaccinations.size() >= 4) {
+			canUserBook = false; // max 4 doses at the moment
+		} else {
+			canUserBook = lastVaccinationDate.before(yesterday); // no vaccination if one is still "on going"
+		}
 		
+		// canUserBook = true;
+		
+		int nextDose = Integer.parseInt(lastVaccination.get(5)) + 1;
 	%>
 	
 	<jsp:include page="../../partials/header.jsp">
@@ -123,47 +131,54 @@
 	          <h2>Le tue prenotazioni</h2>
 	          <h3><%= fiscalCode %></h3>
 	          <p>Qui puoi prenotare nuove vaccinazioni e gestire quelle già prenotate e/o avvenute.</p>
-	          <% if (canUserBook) { %>
-		         	<div style="margin-top: 20px;" class="text-center">
-		          	<button>Prenota</button>
-		        	</div>
-		        <% } %>
 	        </div>
 	
 	        <div class="row">
+	        
+	        	<% if (canUserBook) { %>
+							<div class="col-lg-4 col-md-6 align-items mt-4">
+		              <div class="icon-box">
+		                <div class="icon"><i class="fas fa-syringe"></i></div>
+		                <h5 id="last_vac_id">Prenota la tua <%= nextDose %>a dose! </h5>
+		                <br />
+		                <p>Scegli data</p>
+		                <div style="margin-top: 5px;" class="text-center">
+				              <input type="date" name="newVacDate" id="newVacDate">
+				              <input hidden="true" type="text" name="nextDose" id="nextDose" value="<%= nextDose %>">
+				            </div>
+				           	<button class="bluebutton" id="bookNewVaccine">Prenota</button>
+		              </div>
+		          </div>
+		        <% } %>
+		        
 	          <%
 							for(int i=1; i < vaccinations.size(); i++) {
 								List<String> vac = vaccinations.get(i);
 						%>
 							<div class="col-lg-4 col-md-6 align-items mt-4">
-<!-- 		            <a href="#"> -->
 		              <div class="icon-box">
 		                <div class="icon"><i class="fas fa-syringe"></i></div>
-		                <h4><%= vac.get(4).split(" ")[0] %></h4>
-		                <p>Dettagli vaccinazione</p>
-		                <p>ID: <%= vac.get(0) %></p>
-		                <p>DOSE: <%= vac.get(5) %></p>
+		                <h5><%= vac.get(0) %></h5>
+		                <p><%= vac.get(4).split(" ")[0] %></p>
+		                <p><%= vac.get(5) %>a dose</p>
 		                <br />
 				           	<button>Scarica / Failed</button>
 		              </div>
-<!-- 		            </a> -->
 		          </div>
 						<% } %>
 
 						<div class="col-lg-4 col-md-6 align-items mt-4">
 	              <div class="icon-box">
 	                <div class="icon"><i class="fas fa-syringe"></i></div>
-	                <h4 id="last_vac_date"><%= vaccinations.get(0).get(4).split(" ")[0] %></h4>
-	                <p>Dettagli vaccinazione</p>
-	                <p>ID:</p>
-	                <p id="last_vac_id"><%= vaccinations.get(0).get(0) %></p>
+	                <h5 id="last_vac_id"><%= vaccinations.get(0).get(0) %></h5>
+	                <p id="last_vac_date"><%= vaccinations.get(0).get(4).split(" ")[0] %></p>
 	                <p><%= vaccinations.get(0).get(5) %>a dose</p>
 	                <br />
 	                <p>Cambia data</p>
 	                <div style="margin-top: 5px;" class="text-center">
 			              <input type="date" name="edit_date" id="edit_date">
 			            </div>
-			           	<button id="changeDate">Salva</button>
+			           	<button class="bluebutton" id="changeDate">Salva</button>
 	              </div>
 	          </div>
 	
@@ -189,7 +204,7 @@
   </jsp:include>
   
   <script>
-  	function httpPost(newDate, vacId) {
+  	function editDate(newDate, vacId) {
   		$.ajax({
    	      url: "http://localhost:8080/apsw_project/edit",
    	      type: "post", 
@@ -213,6 +228,29 @@
    	    });
   	}
   	
+  	function newVaccine(newVacDate, nextDose) {
+  		$.ajax({
+   	      url: "http://localhost:8080/apsw_project/book",
+   	      type: "post", 
+   	      data: {
+   	    			newVacDate: newVacDate,
+   	          nextDose: nextDose
+   	      },
+   	      success: function() {
+   	        alert("Nuova prenotazione effettuata correttamente")
+   	        window.location.reload()
+   	      },
+   	      error: function(err) {
+   	    	  if (err.status === 408) {
+   	    		  alert("Sessione scaduta. Accedi nuovamente.")
+   	   	      window.location.replace("http://localhost:8080/apsw_project/pages/user/access.jsp")
+   	    	  } else {
+   	        	alert("Qualcosa è andato storto (newVaccine).")
+   	    	  }
+   	      }
+   	    });
+  	}
+  	
    	$(document).ready(function () {
  	  	$("#changeDate").click(function () {
 	  	    
@@ -226,13 +264,31 @@
  	  		  let nDate = new Date(newDate)
  	  		  let oDate = new Date(oldDate)
  	  		  if (nDate > oDate) {
- 	  	        httpPost(newDate, vacId)
+ 	  	        editDate(newDate, vacId)
  	  		  } else {
  	  			  alert("Errore: La nuova data non può essere antecedente quella vecchia")
  	  		  }
  	        
  	  	  } 	 
- 	  	})
+ 	  	});
+ 	  	$("#bookNewVaccine").click(function () {
+	  	    
+	 		  let newVacDate = $("#newVacDate").val()
+	 		  let nextDose = $("#nextDose").val()
+	
+	  	  if (!newVacDate || !nextDose) {
+	  	    alert("Errore: Selezionare una data.")
+	  	  } else {
+	  		  let now = new Date()
+	  		  let date = new Date(newVacDate)
+	  		  if (date > now) {
+	  				newVaccine(newVacDate, nextDose)
+	  		  } else {
+	  			  alert("Errore: La nuova data non può essere passata")
+	  		  }
+	        
+	  	  } 	 
+	  	})
    	});
   </script>
   

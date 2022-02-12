@@ -36,21 +36,37 @@
 		String email = request.getParameter("email");
 		String phone = request.getParameter("phone");
 		String category = request.getParameter("category");
-	
 		String vac_date = request.getParameter("vac_date");
+		String vac_time = request.getParameter("vac_time");
+		String vacDateTime = vac_date + " " + vac_time;
+		
+		// date values for sql insert
+		String vac_hour = vac_time.split(":")[0];
+		String lessThanDate = vac_date + " " + vac_hour + ":59:00";
+		int intVacHour = Integer.parseInt(vac_hour);
+		int oneHourBefore = intVacHour - 1;
+		String oneHourBeforeString = oneHourBefore < 10 ? "0" + oneHourBefore + ":59:00" : String.valueOf(oneHourBefore) + ":59:00";
+		String greaterThanDate = vac_date + " " + oneHourBeforeString;
+
 		int dose_number = Integer.parseInt(request.getParameter("dose"));
 		
+		// create a random password for the user
 		RandomString8 randomString = new RandomString8(8);
 		String password = randomString.getRandomString().toUpperCase();
 		HashedPassword hashPsw = new HashedPassword(password);
 		String hashedPassword = hashPsw.getHashedPassword();
+		
+		// first vaccination id
+		String vaccinationId = fiscalCode + "_1";
 				
 		String insertUser = "INSERT INTO Vac_User VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); ";
-		String insertBooking = "INSERT INTO Vaccination VALUES (UUID(), ?, null, null, ?, ?); ";
+		// String insertBooking = "INSERT INTO Vaccination VALUES (?, ?, null, null, ?, ?); ";
+		String insertBooking = "INSERT INTO Vaccination SELECT ?, ?, null, null, ?, ? " +
+				"WHERE (SELECT ( SELECT COUNT(*) FROM Vaccination WHERE vac_date > ? AND vac_date < ? ) < 4 );";		
 		String insertCredentials = "INSERT INTO User_Credentials VALUES(?, ?); ";
 				
 		List<Object> paramsUser = Arrays.asList(fiscalCode, name, surname, city, birthdate, gender, email, phone, category);
-		List<Object> paramsBooking = Arrays.asList(fiscalCode, vac_date, dose_number);
+		List<Object> paramsBooking = Arrays.asList(vaccinationId, fiscalCode, vacDateTime, dose_number, greaterThanDate, lessThanDate);
 		List<Object> paramsCredentials = Arrays.asList(fiscalCode, hashedPassword);
 	
 		SQLQuery query1 = new SQLQuery(insertUser, paramsUser);

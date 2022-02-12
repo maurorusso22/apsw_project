@@ -48,6 +48,7 @@
             <div class="col-md-4 form-group">
               <input type="date" name="birthdate" class="form-control datepicker" id="birthdate" placeholder="Data di nascita" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
               <div class="validate"></div>
+              <p style="font-size: 12px; padding-left: 10px;">data di nascita</p>
             </div>
           </div>
 
@@ -83,12 +84,31 @@
               <input type="tel" class="form-control" name="phone" id="phone" placeholder="Telefono" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
               <div class="validate"></div>
             </div>
+          </div>
+          
+          <div class="row">
             <div class="col-md-4 form-group mt-3">
-              <input type="date" name="vac_date" class="form-control datepicker" id="vac_date" placeholder="Data prenotazione" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+              <input min="2022-02-13" max="2022-03-13" type="date" name="vac_date" class="form-control datepicker" id="vac_date">
               <div class="validate"></div>
+              <p style="font-size: 12px; padding-left: 10px;">data vaccinazione</p>
+            </div>
+            <div class="col-md-4 form-group mt-3">
+              <select name="vac_time" id="vac_time" class="form-select">
+              	<option value="null">--:--</option>
+                <option class="timeclass" id="9" value="09:00:00">09:00</option>
+                <option class="timeclass" id="10" value="10:00:00">10:00</option>
+                <option class="timeclass" id="11" value="11:00:00">11:00</option>
+                <option class="timeclass" id="12" value="12:00:00">12:00</option>
+                <option class="timeclass" id="13" value="13:00:00">13:00</option>              
+                <option class="timeclass" id="14" value="14:00:00">14:00</option>
+                <option class="timeclass" id="15" value="15:00:00">15:00</option>
+                <option class="timeclass" id="16" value="16:00:00">16:00</option>
+                <option class="timeclass" id="17" value="17:00:00">17:00</option>
+                <option class="timeclass" id="18" value="18:00:00">18:00</option>
+              </select>
             </div>
           </div>
-
+          
           <div class="mb-3">
             <div class="loading">Loading</div>
             <div class="error-message"></div>
@@ -106,6 +126,52 @@
   <jsp:include page="../../partials/footer.jsp">
   	<jsp:param value="../../" name="initPath"/>
   </jsp:include>
+  
+  <script>
+  	function search(searchDate) {
+  		$.ajax({
+   	      url: "http://localhost:8080/apsw_project/availability",
+   	      type: "post", 
+   	      data: {
+   	    	  	searchDate: searchDate,
+   	      },
+   	      success: function(response) {
+   	        console.log(response)
+   	        const { result } = response
+   	        $("#9").prop("disabled", !result[0])
+   	        $("#10").prop("disabled", !result[1])
+   	        $("#11").prop("disabled", !result[2])
+   	        $("#12").prop("disabled", !result[3])
+   	        $("#13").prop("disabled", !result[4])
+   	        $("#14").prop("disabled", !result[5])
+   	        $("#15").prop("disabled", !result[6])
+   	        $("#16").prop("disabled", !result[7])
+   	        $("#17").prop("disabled", !result[8])
+   	        $("#18").prop("disabled", !result[9])
+   	        if (result.every(el => !el)) {
+   	 	  			$("#vac_date").val(null)
+   	        	alert("Il giorno selezionato è pieno. Selezionare un'altra data per favore");
+   	        }
+   	      },
+   	      error: function(err) {
+   	    	  if (err.status === 408) {
+   	    		  alert("Sessione scaduta. Accedi nuovamente.")
+   	   	      window.location.replace("http://localhost:8080/apsw_project/pages/user/access.jsp")
+   	    	  } else {
+   	        	alert("Qualcosa è andato storto.")
+   	    	  }
+   	      }
+   	    });
+  	}
+  	
+   	$(document).ready(function () {
+ 	  	$("#vac_date").change(function () {
+ 	  		let d = $("#vac_date").val()
+ 	  		console.log(d)
+ 	  		search(d);
+ 	  	});
+   	});
+  </script>
 
 </body>
 </html>

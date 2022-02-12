@@ -125,12 +125,10 @@
 						             <a data-bs-toggle="collapse" class="collapse" data-bs-target="#newvac">Aggiungi vaccinazione<i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
 						             <div id="newvac" class="collapse" data-bs-parent=".faq-list">
 													<form action="" role="form" class="php-email-form">
-													
-													  <input hidden="true" type="text" name="doctorFiscalCode" id="doctorFiscalCode" value=<%= fiscalCode %>>
-				
+																	
 									          <div class="row mb-3 mt-3">
 									            <div class="col-md-4 form-group">
-									              <input type="text" name="userFiscalCode" class="form-control" id="userFiscalCode" placeholder="Codice fiscale paziente">
+									              <input type="text" name="vaccinationId" class="form-control" id="vaccinationId" placeholder="ID vaccinazione">
 									              <div class="validate"></div>
 									            </div>
 									            <div class="col-md-4 form-group">
@@ -208,18 +206,16 @@
   </jsp:include>
   
   <script>
-  	function httpPost(doctorFiscalCode, userFiscalCode, product) {
+  	function httpPost(vaccinationId, product) {
   		$.ajax({
    	      url: "http://localhost:8080/apsw_project/addvac",
    	      type: "post", 
    	      data: {
-   	    			doctorFiscalCode: doctorFiscalCode,
-   	    			userFiscalCode: userFiscalCode,
+   	    			vaccinationId: vaccinationId,
    	    			product: product
    	      },
    	      success: function() {
-   	        $("#doctorFiscalCode").val(null)
-   	        $("#userFiscalCode").val(null)
+   	        $("#vaccinationId").val(null)
    	        $("#product").val(null)
    	        alert("Vaccinazione aggiunta correttamente")
    	        window.location.reload()
@@ -238,14 +234,13 @@
    	$(document).ready(function () {
  	  	$("#newVacButton").click(function () {
 	  	    
-	 		  let doctorFiscalCode = $("#doctorFiscalCode").val()
-	 		  let userFiscalCode = $("#userFiscalCode").val()
+	 		  let vaccinationId = $("#vaccinationId").val()
 	 		  let product = $("#product").val()
 	
- 	  	  if (!doctorFiscalCode || !userFiscalCode || !product) {
+ 	  	  if (!vaccinationId || !product) {
  	  	    alert("Errore: Inserire tutti i dati richiesti.")
  	  	  } else {
- 	  	  	httpPost(doctorFiscalCode, userFiscalCode, product)
+ 	  	  	httpPost(vaccinationId, product)
  	  	  } 	 
  	  	})
    	});

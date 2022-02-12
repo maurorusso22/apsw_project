@@ -151,6 +151,7 @@
 					            <div class="col-md-4 form-group mt-3">
 					              <input type="date" name="birthdate" class="form-control datepicker" id="birthdate" placeholder="Data di nascita">
 					              <div class="validate"></div>
+<!-- 					              <p style="font-size: 12px; padding-left: 10px;">data di nascita</p> -->
 					            </div>
 					            <div class="col-md-4 form-group mt-3">
 					              <input type="text" name="fiscalCode" class="form-control" id="fiscalCode" placeholder="Codice fiscale" data-rule="minlen:2" data-msg="Please enter at least 2 chars">
