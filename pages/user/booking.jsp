@@ -1,3 +1,7 @@
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="java.time.LocalDate"%>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -12,6 +16,9 @@
 
 	<%
 		String fiscalCode = request.getParameter("fc");
+		
+		LocalDate today = LocalDate.now();
+		LocalDate futureDate = LocalDate.now().plusMonths(1);
 	%>
 
   <jsp:include page="../../partials/header.jsp">
@@ -88,7 +95,7 @@
           
           <div class="row">
             <div class="col-md-4 form-group mt-3">
-              <input min="2022-02-13" max="2022-03-13" type="date" name="vac_date" class="form-control datepicker" id="vac_date">
+              <input min=<%= today %> max=<%= futureDate %> type="date" name="vac_date" class="form-control datepicker" id="vac_date">
               <div class="validate"></div>
               <p style="font-size: 12px; padding-left: 10px;">data vaccinazione</p>
             </div>
@@ -167,7 +174,6 @@
    	$(document).ready(function () {
  	  	$("#vac_date").change(function () {
  	  		let d = $("#vac_date").val()
- 	  		console.log(d)
  	  		search(d);
  	  	});
    	});

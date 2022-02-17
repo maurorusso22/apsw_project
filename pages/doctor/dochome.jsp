@@ -91,7 +91,7 @@
 				HttpSession doctorSession = request.getSession();
 				doctorSession.setAttribute("type", "doctor");
 				doctorSession.setAttribute("id_doctor", fiscalCode);
-				doctorSession.setMaxInactiveInterval(600);
+				doctorSession.setMaxInactiveInterval(60*60*24);
 			} else {
 				access = false;
 			}
@@ -171,7 +171,7 @@
 			          </div>
 			
 								<div class="col-lg-3 col-md-6 mt-5 mt-lg-0">
-									<a href="#">
+									<a href="http://localhost:8080/apsw_project/doc-report">
 				            <div class="count-box">
 				              <i class="fas fa-flask"></i>
 				              <span>Scarica</span>

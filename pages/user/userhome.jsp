@@ -4,6 +4,8 @@
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Arrays"%>
+<%@ page import="java.time.LocalDate"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.io.IOException"%>
 <%@ page import="java.security.MessageDigest"%>
 <%@ page import="jakarta.servlet.ServletException"%>
@@ -80,7 +82,7 @@
 		List<List<String>> userInfo = query2.getResult();
 		List<List<String>> vaccinations = query3.getResult();
 
-		
+		// access
 		if (query1.getStatus() == Database.RESULT && !result.isEmpty()) {
 			String dbHashedPsw = result.get(0).get(1);
 			
@@ -92,7 +94,7 @@
 				HttpSession userSession = request.getSession();
 				userSession.setAttribute("type", "user");
 				userSession.setAttribute("id_user", fiscalCode);
-				userSession.setMaxInactiveInterval(600);
+				userSession.setMaxInactiveInterval(60*30);
 			} else {
 				access = false;
 			}
@@ -100,6 +102,7 @@
 			access = false;
 		}
 		
+		// check if the user can book another vaccine
 		List<String> lastVaccination = vaccinations.get(0);
 		Date now = new Date();
 		Date yesterday = new Date(new Date().getTime() - 86400000);
@@ -111,9 +114,19 @@
 			canUserBook = lastVaccinationDate.before(yesterday); // no vaccination if one is still "on going"
 		}
 		
-		// canUserBook = true;
+		// data for booking	a new one	
+		int nextDose;
+		if (lastVaccination.get(3) != null) {
+			nextDose = Integer.parseInt(lastVaccination.get(5)) + 1;
+		} else {
+			nextDose = Integer.parseInt(lastVaccination.get(5));
+		}
 		
-		int nextDose = Integer.parseInt(lastVaccination.get(5)) + 1;
+		int nextId = Integer.parseInt(lastVaccination.get(0).split("_")[1]) + 1;
+		
+		
+		LocalDate today = LocalDate.now();
+		LocalDate futureDate = LocalDate.now().plusMonths(1);
 	%>
 	
 	<jsp:include page="../../partials/header.jsp">
@@ -143,8 +156,22 @@
 		                <br />
 		                <p>Scegli data</p>
 		                <div style="margin-top: 5px;" class="text-center">
-				              <input type="date" name="newVacDate" id="newVacDate">
+				              <input type="date" name="newVacDate" id="newVacDate" min=<%= today %> max=<%= futureDate %>>
 				              <input hidden="true" type="text" name="nextDose" id="nextDose" value="<%= nextDose %>">
+				              <input hidden="true" type="text" name="nextId" id="nextId" value="<%= nextId %>">
+				              <select name="newVacTime" id="newVacTime">
+				              	<option value="null">--:--</option>
+				                <option class="timeclass" id="9" value="09:00:00">09:00</option>
+				                <option class="timeclass" id="10" value="10:00:00">10:00</option>
+				                <option class="timeclass" id="11" value="11:00:00">11:00</option>
+				                <option class="timeclass" id="12" value="12:00:00">12:00</option>
+				                <option class="timeclass" id="13" value="13:00:00">13:00</option>              
+				                <option class="timeclass" id="14" value="14:00:00">14:00</option>
+				                <option class="timeclass" id="15" value="15:00:00">15:00</option>
+				                <option class="timeclass" id="16" value="16:00:00">16:00</option>
+				                <option class="timeclass" id="17" value="17:00:00">17:00</option>
+				                <option class="timeclass" id="18" value="18:00:00">18:00</option>
+				              </select>
 				            </div>
 				           	<button class="bluebutton" id="bookNewVaccine">Prenota</button>
 		              </div>
@@ -152,37 +179,70 @@
 		        <% } %>
 		        
 	          <%
-							for(int i=1; i < vaccinations.size(); i++) {
+							for(int i=0; i < vaccinations.size(); i++) {
 								List<String> vac = vaccinations.get(i);
 						%>
-							<div class="col-lg-4 col-md-6 align-items mt-4">
+							<% if (i == 0) { %>
+								<div class="col-lg-4 col-md-6 align-items mt-4">
 		              <div class="icon-box">
 		                <div class="icon"><i class="fas fa-syringe"></i></div>
-		                <h5><%= vac.get(0) %></h5>
-		                <p><%= vac.get(4).split(" ")[0] %></p>
+		                <h5 id="last_vac_id"><%= vac.get(0) %></h5>
+		                <p id="last_vac_date"><%= vac.get(4).split(" ")[0] %></p>
+		                <p id="last_vac_time"><%= "alle " + vac.get(4).split(" ")[1] %></p>
 		                <p><%= vac.get(5) %>a dose</p>
 		                <br />
-				           	<button>Scarica / Failed</button>
+		                <% 
+		                	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		                	Date vd = formatter.parse(vac.get(4).split(" ")[0]);
+		                	if (vd.after(new Date())) { 
+		                %>
+			                <p>Cambia data</p>
+			                <div style="margin-top: 5px;" class="text-center">
+					              <input type="date" name="editDate" id="editDate" min=<%= vac.get(4).split(" ")[0] %>>
+					              <select name="editVacTime" id="editVacTime">
+					              	<option value="null">--:--</option>
+					                <option class="timeclass" id="9" value="09:00:00">09:00</option>
+					                <option class="timeclass" id="10" value="10:00:00">10:00</option>
+					                <option class="timeclass" id="11" value="11:00:00">11:00</option>
+					                <option class="timeclass" id="12" value="12:00:00">12:00</option>
+					                <option class="timeclass" id="13" value="13:00:00">13:00</option>              
+					                <option class="timeclass" id="14" value="14:00:00">14:00</option>
+					                <option class="timeclass" id="15" value="15:00:00">15:00</option>
+					                <option class="timeclass" id="16" value="16:00:00">16:00</option>
+					                <option class="timeclass" id="17" value="17:00:00">17:00</option>
+					                <option class="timeclass" id="18" value="18:00:00">18:00</option>
+					              </select>
+					            </div>
+					           	<button class="bluebutton" id="changeDate">Salva</button>
+					          <% } else if (vd.before(new Date()) && vac.get(3) != null) { %>
+					          	<button>Scarica</button>
+					          <% } else { %>
+					          	<p style="color: red;">vaccinazione non avvenuta</p>
+					          <% } %>
 		              </div>
-		          </div>
-						<% } %>
-
-						<div class="col-lg-4 col-md-6 align-items mt-4">
-	              <div class="icon-box">
-	                <div class="icon"><i class="fas fa-syringe"></i></div>
-	                <h5 id="last_vac_id"><%= vaccinations.get(0).get(0) %></h5>
-	                <p id="last_vac_date"><%= vaccinations.get(0).get(4).split(" ")[0] %></p>
-	                <p><%= vaccinations.get(0).get(5) %>a dose</p>
-	                <br />
-	                <p>Cambia data</p>
-	                <div style="margin-top: 5px;" class="text-center">
-			              <input type="date" name="edit_date" id="edit_date">
-			            </div>
-			           	<button class="bluebutton" id="changeDate">Salva</button>
-	              </div>
-	          </div>
+		          	</div>
+							
+							<% } else { %>
+								<div class="col-lg-4 col-md-6 align-items mt-4">
+			              <div class="icon-box">
+			                <div class="icon"><i class="fas fa-syringe"></i></div>
+			                <h5><%= vac.get(0) %></h5>
+			                <p><%= vac.get(4).split(" ")[0] %></p>
+			                <p><%= "alle " + vac.get(4).split(" ")[1] %></p>
+			                <p><%= vac.get(5) %>a dose</p>
+			                <br />
+			                <% if (vac.get(3) != null) { %>
+						          	<button>Scarica</button>
+						          <% } else { %>
+					           		<p style="color: red;">vaccinazione non avvenuta</p>
+					           	<% } %>
+			              </div>
+			          </div>
+			        <% } %>
+			      <% } %>					
 	
 	        </div>
+	      
 	      <% } else { %>
 	      	<div class="section-title">
 	          <h2>Le tue prenotazioni</h2>
@@ -204,17 +264,19 @@
   </jsp:include>
   
   <script>
-  	function editDate(newDate, vacId) {
+  	function editDate(newDate, editVacTime, vacId) {
   		$.ajax({
    	      url: "http://localhost:8080/apsw_project/edit",
    	      type: "post", 
    	      data: {
    	    	  	newDate: newDate,
+   	    	 		editVacTime: editVacTime,
    	          vacId: vacId
    	      },
    	      success: function() {
    	        $("#last_vac_date").html(newDate)
-   	        $("#edit_date").val(null)
+   	        $("#last_vac_time").html(editVacTime)
+   	        $("#editDate").val(null)
    	        alert("Data della prenotazione cambiata correttamente")
    	      },
    	      error: function(err) {
@@ -228,13 +290,15 @@
    	    });
   	}
   	
-  	function newVaccine(newVacDate, nextDose) {
+  	function newVaccine(newVacDate, newVacTime, nextDose, nextId) {
   		$.ajax({
    	      url: "http://localhost:8080/apsw_project/book",
    	      type: "post", 
    	      data: {
    	    			newVacDate: newVacDate,
-   	          nextDose: nextDose
+   	    			newVacTime: newVacTime,
+   	          nextDose: nextDose,
+   	          nextId: nextId
    	      },
    	      success: function() {
    	        alert("Nuova prenotazione effettuata correttamente")
@@ -251,38 +315,87 @@
    	    });
   	}
   	
+  	function search(searchDate) {
+  		$.ajax({
+   	      url: "http://localhost:8080/apsw_project/availability",
+   	      type: "post", 
+   	      data: {
+   	    	  	searchDate: searchDate,
+   	      },
+   	      success: function(response) {
+   	        console.log(response)
+   	        const { result } = response
+   	        $("#9").prop("disabled", !result[0])
+   	        $("#10").prop("disabled", !result[1])
+   	        $("#11").prop("disabled", !result[2])
+   	        $("#12").prop("disabled", !result[3])
+   	        $("#13").prop("disabled", !result[4])
+   	        $("#14").prop("disabled", !result[5])
+   	        $("#15").prop("disabled", !result[6])
+   	        $("#16").prop("disabled", !result[7])
+   	        $("#17").prop("disabled", !result[8])
+   	        $("#18").prop("disabled", !result[9])
+   	        if (result.every(el => !el)) {
+   	 	  			$("#newVacDate").val(null)
+   	        	alert("Il giorno selezionato è pieno. Selezionare un'altra data per favore");
+   	        }
+   	      },
+   	      error: function(err) {
+   	    	  if (err.status === 408) {
+   	    		  alert("Sessione scaduta. Accedi nuovamente.")
+   	   	      window.location.replace("http://localhost:8080/apsw_project/pages/user/access.jsp")
+   	    	  } else {
+   	        	alert("Qualcosa è andato storto.")
+   	    	  }
+   	      }
+   	    });
+  	}
+  	
    	$(document).ready(function () {
  	  	$("#changeDate").click(function () {
 	  	    
-	 		  let newDate = $("#edit_date").val()
+	 		  let newDate = $("#editDate").val()
 	 		  let oldDate = $("#last_vac_date").html()
+	 		  let editVacTime = $("#editVacTime").val()
 	 		  let vacId = $("#last_vac_id").html()
 	
- 	  	  if (!newDate) {
- 	  	    alert("Errore: Selezionare una data.")
+ 	  	  if (!newDate || !editVacTime || editVacTime == "null") {
+ 	  	    alert("Errore: Selezionare una data e un orario.")
  	  	  } else {
  	  		  let nDate = new Date(newDate)
  	  		  let oDate = new Date(oldDate)
  	  		  if (nDate > oDate) {
- 	  	        editDate(newDate, vacId)
+ 	  	        editDate(newDate, editVacTime, vacId)
  	  		  } else {
- 	  			  alert("Errore: La nuova data non può essere antecedente quella vecchia")
+ 	  			  alert("Errore: La nuova data non può essere antecedente o uguale quella vecchia")
  	  		  }
  	        
  	  	  } 	 
  	  	});
+ 	  	$("#editDate").change(function () {
+ 	  		let d = $("#editDate").val()
+ 	  		$("#editVacTime").val("null")
+ 	  		search(d);
+ 	  	});
+ 	  	$("#newVacDate").change(function () {
+ 	  		let d = $("#newVacDate").val()
+ 	  		$("#newVacTime").val("null")
+ 	  		search(d);
+ 	  	});
  	  	$("#bookNewVaccine").click(function () {
 	  	    
 	 		  let newVacDate = $("#newVacDate").val()
+	 		  let newVacTime = $("#newVacTime").val()
 	 		  let nextDose = $("#nextDose").val()
+	 		  let nextId = $("#nextId").val()
 	
-	  	  if (!newVacDate || !nextDose) {
-	  	    alert("Errore: Selezionare una data.")
+	  	  if (!newVacDate || !newVacTime || newVacTime == "null") {
+	  	    alert("Errore: Selezionare una data e un orario.")
 	  	  } else {
 	  		  let now = new Date()
 	  		  let date = new Date(newVacDate)
 	  		  if (date > now) {
-	  				newVaccine(newVacDate, nextDose)
+	  				newVaccine(newVacDate, newVacTime, nextDose, nextId)
 	  		  } else {
 	  			  alert("Errore: La nuova data non può essere passata")
 	  		  }

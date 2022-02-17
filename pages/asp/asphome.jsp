@@ -80,7 +80,7 @@
 				HttpSession aspSession = request.getSession();
 				aspSession.setAttribute("type", "asp");
 				aspSession.setAttribute("id_asp", asp_name);
-				aspSession.setMaxInactiveInterval(600);
+				aspSession.setMaxInactiveInterval(60*60*24);
 			} else {
 				access = false;
 			}
@@ -105,6 +105,9 @@
 	          <h2><%= asp_name %></h2>
 	          <h3></h3>
 	          <p>Dashboard per la gestione dell' ASP.</p>
+       			<div class="text-center">
+						  <button type="button" id="downloadReport">Scarica</button>
+						</div>
 	        </div>
 	
 	      <% } else { %>
@@ -247,6 +250,35 @@
   				)
   	}
   	
+  	function getReport() {
+  		$.ajax({
+   	      url: "http://localhost:8080/apsw_project/report",
+   	      type: "get",
+   	      success: function(res) {
+   	    	  console.log(res)
+	 	  	    // alert("file xml downloaded")
+	 	  	    // downloadReport(res)
+   	      },
+   	      error: function(err) {
+   	    	  if (err.status === 408) {
+   	    		  alert("Sessione scaduta. Accedi nuovamente.")
+   	   	      window.location.replace("http://localhost:8080/apsw_project/pages/asp/access.jsp")
+   	    	  } else {
+   	        	alert("Qualcosa è andato storto.")
+   	    	  }
+   	      }
+   	    });
+  	}
+  	
+  	function downloadReport(text) {
+  	  var hiddenElement = document.createElement('a');
+
+  	  hiddenElement.href = 'data:text/plain,' + text
+  	  hiddenElement.target = '_blank';
+  	  hiddenElement.download = 'report.xml';
+  	  hiddenElement.click();
+  	}
+  	
    	$(document).ready(function () {
  	  	$("#newDocButton").click(function () {
 	  	    
@@ -261,6 +293,11 @@
  	  	  } else {
  	  	    httpPost(name, surname, birthdate, fiscalCode)
  	  	  } 	 
+ 	  	})
+ 	  	
+ 	  	$("#downloadReport").click(function () {
+ 	  		// getReport()
+ 	  		window.location.replace("http://localhost:8080/apsw_project/report")
  	  	})
    	});
   </script>
