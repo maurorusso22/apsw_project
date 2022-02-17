@@ -109,9 +109,7 @@ public class AvailabilityServlet extends HttpServlet {
 				boolArray[8] + "," +
 				boolArray[9] + 
 		"]}";
-		
-		System.out.println(output);
-		
+				
 		response.setContentType("application/json");
 		out.print(output);
 	}

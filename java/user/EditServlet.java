@@ -39,10 +39,13 @@ public class EditServlet extends HttpServlet {
 			String fiscalCode = (String) userSession.getAttribute("id_user");
 		
 			String newDate = request.getParameter("newDate");
+			String newTime = request.getParameter("editVacTime");
 			String vacId = request.getParameter("vacId");
 			
+			String newDateTime = newDate + " " + newTime;
+			
 			String sql = "UPDATE Vaccination SET vac_date = ? WHERE id_vaccination = ? AND id_user = ? ;";
-			List<Object> params = Arrays.asList(newDate, vacId, fiscalCode);
+			List<Object> params = Arrays.asList(newDateTime, vacId, fiscalCode);
 			SQLQuery query = new SQLQuery(sql, params);
 	
 			Database.execute(query);

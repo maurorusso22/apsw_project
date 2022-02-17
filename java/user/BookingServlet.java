@@ -42,11 +42,14 @@ public class BookingServlet extends HttpServlet {
 			String fiscalCode = (String) userSession.getAttribute("id_user");
 					
 			String vac_date = request.getParameter("newVacDate");
+			String vac_time = request.getParameter("newVacTime");
+			String vac_date_time = vac_date + " " + vac_time;
 			int dose_number = Integer.parseInt(request.getParameter("nextDose"));
-			String vaccinationId = fiscalCode + "_" + dose_number;
+			int next_id = Integer.parseInt(request.getParameter("nextId"));
+			String vaccinationId = fiscalCode + "_" + next_id;
 			
 			String insertBooking = "INSERT INTO Vaccination VALUES (?, ?, null, null, ?, ?); ";
-			List<Object> paramsBooking = Arrays.asList(vaccinationId, fiscalCode, vac_date, dose_number);
+			List<Object> paramsBooking = Arrays.asList(vaccinationId, fiscalCode, vac_date_time, dose_number);
 			SQLQuery query = new SQLQuery(insertBooking, paramsBooking);
 	
 			Database.execute(query);
