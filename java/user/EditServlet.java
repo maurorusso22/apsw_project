@@ -48,9 +48,11 @@ public class EditServlet extends HttpServlet {
 			List<Object> params = Arrays.asList(newDateTime, vacId, fiscalCode);
 			SQLQuery query = new SQLQuery(sql, params);
 	
-			Database.execute(query);
-		
-			// if no error on db
+			try {
+				Database.execute(query);
+			} catch (Exception e) {
+				response.sendError(500);
+			}
 		} else {
 			response.sendError(408);
 		}

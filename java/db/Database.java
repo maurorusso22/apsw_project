@@ -21,7 +21,7 @@ public class Database {
 		}
 	}
 
-	public static void execute(SQLQuery... queries) {
+	public static void execute(SQLQuery... queries) throws Exception {
 
 		try {
 
@@ -41,6 +41,9 @@ public class Database {
 					statement.execute();
 					
 					queries[i].setResult(statement.getResultSet());
+					
+					// if select, it returns -1
+					queries[i].setUpdateCount(statement.getUpdateCount());
 
 					statement.close();
 				}
@@ -48,6 +51,7 @@ public class Database {
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
+			throw e;
 		}
 
 	}

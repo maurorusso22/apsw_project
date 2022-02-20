@@ -1,7 +1,6 @@
 package asp;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,8 +8,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Text;
 
 import db.Database;
 import db.SQLQuery;
@@ -38,13 +35,17 @@ public class ReportServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		// get data from db
-		String sql = "SELECT * FROM Vaccination; ";
+		String sql = "SELECT * FROM Vaccination WHERE id_doctor IS NOT NULL ; ";
 		
 		List<Object> params = Arrays.asList();
 		
 		SQLQuery query = new SQLQuery(sql, params);
 
-		Database.execute(query);
+		try {
+			Database.execute(query);
+		} catch (Exception e1) {
+			response.sendError(500);
+		}
 		
 		List<List<String>> vaccinations = query.getResult();
 		
@@ -70,7 +71,6 @@ public class ReportServlet extends HttpServlet {
 	       
 	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 	        
-	        // StreamResult result = new StreamResult(System.out);
 	        StreamResult result =  new StreamResult(response.getWriter());
 	        DOMSource source = new DOMSource(doc);
 	        transformer.transform(source, result);

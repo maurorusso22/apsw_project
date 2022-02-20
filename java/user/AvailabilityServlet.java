@@ -43,10 +43,12 @@ public class AvailabilityServlet extends HttpServlet {
 		List<Object> params = Arrays.asList(startDateTime, endDateTime);
 		SQLQuery query = new SQLQuery(sql, params);
 
-		Database.execute(query);
-		
-		// if no error on db
-		
+		try {
+			Database.execute(query);
+		} catch (Exception e) {
+			response.sendError(500);
+		}
+				
 		List<List<String>> result = query.getResult();
 		
 		// array that counts how many vaccinations for a determined time

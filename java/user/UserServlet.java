@@ -40,7 +40,11 @@ public class UserServlet extends HttpServlet {
 		List<Object> params = Arrays.asList(fiscalCode);
 		SQLQuery query = new SQLQuery(sql, params);
 
-		Database.execute(query);
+		try {
+			Database.execute(query);
+		} catch (Exception e) {
+			response.sendError(500);
+		}
 		
 		int status = query.getStatus();
 

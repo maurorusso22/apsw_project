@@ -50,13 +50,20 @@ public class AddVaccinationServlet extends HttpServlet {
 	
 			SQLQuery query = new SQLQuery(update, params);
 	
-			Database.execute(query);
-		
+			try {
+				Database.execute(query);
+			} catch (Exception e) {
+				response.sendError(500);
+			}
+			
+			int result = query.getUpdateCount();
+			
+			if (result != 1) {
+				response.sendError(404);
+			}
+					
 		} else {
 			response.sendError(408);
 		}
-		
-		// control if some error happen on db execution.
 	}
-
 }

@@ -69,10 +69,12 @@ public class NewDoctorServlet extends HttpServlet {
 			SQLQuery query1 = new SQLQuery(insertNewDoctor, paramsDoctor);
 			SQLQuery query2 = new SQLQuery(insertNewDocCredentials, paramsCredentials);
 	
-			Database.execute(query1, query2);
-			
-			// if no error on db
-					
+			try {
+				Database.execute(query1, query2);
+			} catch (Exception e) {
+				response.sendError(500);
+			}
+								
 			var output = "{\"doc_password\": \"" + password + "\", \"success\": \"" + true + "\"}";
 			response.setContentType("application/json");
 			out.print(output);

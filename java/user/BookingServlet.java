@@ -52,9 +52,11 @@ public class BookingServlet extends HttpServlet {
 			List<Object> paramsBooking = Arrays.asList(vaccinationId, fiscalCode, vac_date_time, dose_number);
 			SQLQuery query = new SQLQuery(insertBooking, paramsBooking);
 	
-			Database.execute(query);
-			
-			// control if some error happen on db execution. 
+			try {
+				Database.execute(query);
+			} catch (Exception e) {
+				response.sendError(500);
+			}
 		} else {
 			response.sendError(408);
 		}

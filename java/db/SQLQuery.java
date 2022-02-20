@@ -10,6 +10,7 @@ public class SQLQuery {
 	private List<Object> params = new ArrayList<>();
 	private int status = -1;
 	private List<List<String>> result = new ArrayList<>();
+	private int updateCount = 0;
 	private String excMessage;
 
 	public SQLQuery(String query, List<Object> params) {
@@ -61,6 +62,14 @@ public class SQLQuery {
 			setExcMessage(exc.getMessage());
 			setStatus(Database.ERROR);
 		}
+	}
+	
+	public int getUpdateCount() {
+		return updateCount;
+	}
+
+	public void setUpdateCount(int uc) {
+		this.updateCount = uc;
 	}
 
 	public String getExcMessage() {
