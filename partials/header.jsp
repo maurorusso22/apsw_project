@@ -9,9 +9,9 @@
 
       <nav id="navbar" class="navbar order-last order-lg-0">
         <ul>
-          <li><a class="nav-link scrollto active" href="http://localhost:8080/apsw_project/index.jsp">Home</a></li>
-          <li><a class="nav-link scrollto" href="<%= path + "/pages/about.jsp" %>">About</a></li>
-          <li><a class="nav-link scrollto" href="<%= path + "/pages/services.jsp" %>">Services</a></li>
+          <li><a class="nav-link scrollto" href="http://localhost:8080/apsw_project/pages/user/access.jsp">Utente</a></li>
+          <li><a class="nav-link scrollto" href="http://localhost:8080/apsw_project/pages/doctor/access.jsp">Dottore</a></li>
+          <li><a class="nav-link scrollto" href="http://localhost:8080/apsw_project/pages/asp/access.jsp">ASP</a></li>
 
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
