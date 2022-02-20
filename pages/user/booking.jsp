@@ -37,7 +37,6 @@
           <p>Risulta che tu non abbia mai prenotato un vaccino. Inserisci i tuoi dati e procedi con la prenotazione.</p>
         </div>
 
-<!--         <form action="http://localhost:8080/apsw_project/book" method="post" role="form" class="php-email-form"> -->
 				<form action="http://localhost:8080/apsw_project/pages/user/firstaccess.jsp" method="post" role="form" class="php-email-form">
         
         	<input hidden="true" type="text" name="fiscalCode" id="fiscalCode" value=<%= fiscalCode %>>
@@ -45,15 +44,15 @@
         
           <div class="row">
             <div class="col-md-4 form-group">
-              <input type="text" name="name" class="form-control" id="name" placeholder="Nome" data-rule="minlen:2" data-msg="Please enter at least 2 chars">
+              <input type="text" name="name" class="form-control" id="name" placeholder="Nome" required="required" pattern="[A-Za-z]{2,30}">
               <div class="validate"></div>
             </div>
             <div class="col-md-4 form-group">
-              <input type="text" name="surname" class="form-control" id="surname" placeholder="Cognome" data-rule="minlen:2" data-msg="Please enter at least 2 chars">
+              <input type="text" name="surname" class="form-control" id="surname" placeholder="Cognome" data-rule="minlen:2" required="required" pattern="[A-Za-z]{2,30}">
               <div class="validate"></div>
             </div>
             <div class="col-md-4 form-group">
-              <input type="date" name="birthdate" class="form-control datepicker" id="birthdate" placeholder="Data di nascita" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+              <input type="date" name="birthdate" class="form-control datepicker" id="birthdate" placeholder="Data di nascita" required="required">
               <div class="validate"></div>
               <p style="font-size: 12px; padding-left: 10px;">data di nascita</p>
             </div>
@@ -61,7 +60,7 @@
 
           <div class="row">
             <div class="col-md-4 form-group mt-3">
-              <select name="gender" id="gender" class="form-select">
+              <select name="gender" id="gender" class="form-select" required="required">
                 <option value="1">Uomo</option>
                 <option value="2">Donna</option>
                 <option value="3">Altro</option>
@@ -69,11 +68,11 @@
               <div class="validate"></div>
             </div>
             <div class="col-md-4 form-group mt-3">
-              <input type="text" name="city" class="form-control" id="city" placeholder="Città di nascita" data-rule="minlen:2" data-msg="Please enter at least 2 chars">
+              <input type="text" name="city" class="form-control" id="city" placeholder="Città di nascita" required="required" pattern="[A-Za-z]{2,30}">
               <div class="validate"></div>
             </div>
             <div class="col-md-4 form-group mt-3">
-              <select name="category" id="category" class="form-select">
+              <select name="category" id="category" class="form-select" required="required">
                 <option value="none">No categoria speciale</option>
                 <option value="fragile">Soggetto fragile</option>
                 <option value="over65">Over 65</option>
@@ -84,23 +83,23 @@
 
           <div class="row">
             <div class="col-md-4 form-group mt-3">
-              <input type="email" class="form-control" name="email" id="email" placeholder="Email" data-rule="email" data-msg="Please enter a valid email">
+              <input type="email" class="form-control" name="email" id="email" placeholder="Email" required="required">
               <div class="validate"></div>
             </div>
             <div class="col-md-4 form-group mt-3">
-              <input type="tel" class="form-control" name="phone" id="phone" placeholder="Telefono" data-rule="minlen:4" data-msg="Please enter at least 4 chars">
+              <input type="tel" class="form-control" name="phone" id="phone" placeholder="Telefono" required="required" pattern="[0-9]{2,12}">
               <div class="validate"></div>
             </div>
           </div>
           
           <div class="row">
             <div class="col-md-4 form-group mt-3">
-              <input min=<%= today %> max=<%= futureDate %> type="date" name="vac_date" class="form-control datepicker" id="vac_date">
+              <input min=<%= today %> max=<%= futureDate %> type="date" name="vac_date" class="form-control datepicker" id="vac_date" required="required">
               <div class="validate"></div>
               <p style="font-size: 12px; padding-left: 10px;">data vaccinazione</p>
             </div>
             <div class="col-md-4 form-group mt-3">
-              <select name="vac_time" id="vac_time" class="form-select">
+              <select name="vac_time" id="vac_time" class="form-select" required="required">
               	<option value="null">--:--</option>
                 <option class="timeclass" id="9" value="09:00:00">09:00</option>
                 <option class="timeclass" id="10" value="10:00:00">10:00</option>

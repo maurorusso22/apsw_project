@@ -53,20 +53,22 @@
 		
 		String selectCredentials = "SELECT * FROM ASP_Credentials WHERE asp_name = ? ;";
 		String selectDoctors = "SELECT * FROM Doctor WHERE asp = ? ORDER BY surname; ";
-		String selectVaccinations = "SELECT * FROM Vaccination ; ";
 				
 		List<Object> params = Arrays.asList(asp_name);
 	
 		SQLQuery query1 = new SQLQuery(selectCredentials, params);
 		SQLQuery query2 = new SQLQuery(selectDoctors, params);
-		SQLQuery query3 = new SQLQuery(selectVaccinations, params);
 	
-		Database.execute(query1, query2, query3);
-		// get the data all together to not call db twice
+		try {
+			Database.execute(query1, query2);
+			// get the data all together to not call db twice
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(500);
+		}
 		
 		List<List<String>> result = query1.getResult();
 		List<List<String>> doctors = query2.getResult();
-		List<List<String>> vaccinations = query3.getResult();
 
 		
 		if (query1.getStatus() == Database.RESULT && !result.isEmpty()) {
@@ -103,9 +105,9 @@
 				<% if (access) { %>
 	        <div class="section-title">
 	          <h2><%= asp_name %></h2>
-	          <h3></h3>
-	          <p>Dashboard per la gestione dell' ASP.</p>
-       			<div class="text-center">
+	          <h4>Dashboard per la gestione dell' ASP.</h4>
+	          <p style="margin-top: 20px;">Premere il tasto sottostante per avere un resoconto dei vaccini effettuati</p>
+       			<div style="margin-top: 20px;" class="text-center">
 						  <button type="button" id="downloadReport">Scarica</button>
 						</div>
 	        </div>
@@ -250,35 +252,6 @@
   				)
   	}
   	
-  	function getReport() {
-  		$.ajax({
-   	      url: "http://localhost:8080/apsw_project/report",
-   	      type: "get",
-   	      success: function(res) {
-   	    	  console.log(res)
-	 	  	    // alert("file xml downloaded")
-	 	  	    // downloadReport(res)
-   	      },
-   	      error: function(err) {
-   	    	  if (err.status === 408) {
-   	    		  alert("Sessione scaduta. Accedi nuovamente.")
-   	   	      window.location.replace("http://localhost:8080/apsw_project/pages/asp/access.jsp")
-   	    	  } else {
-   	        	alert("Qualcosa è andato storto.")
-   	    	  }
-   	      }
-   	    });
-  	}
-  	
-  	function downloadReport(text) {
-  	  var hiddenElement = document.createElement('a');
-
-  	  hiddenElement.href = 'data:text/plain,' + text
-  	  hiddenElement.target = '_blank';
-  	  hiddenElement.download = 'report.xml';
-  	  hiddenElement.click();
-  	}
-  	
    	$(document).ready(function () {
  	  	$("#newDocButton").click(function () {
 	  	    
@@ -296,7 +269,6 @@
  	  	})
  	  	
  	  	$("#downloadReport").click(function () {
- 	  		// getReport()
  	  		window.location.replace("http://localhost:8080/apsw_project/report")
  	  	})
    	});

@@ -34,7 +34,7 @@
         	
           <div class="row justify-content-center">
             <div class="col-md-4 form-group mt-3 mt-md-0">
-              <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+              <input type="password" class="form-control" name="password" id="password" placeholder="Password" required="required">
               <div class="validate"></div>
             </div>
           </div>

@@ -75,8 +75,12 @@
 		SQLQuery query2 = new SQLQuery(selectUserInfo, params);
 		SQLQuery query3 = new SQLQuery(selectVacInfo, params);
 	
-		Database.execute(query1, query2, query3);
-		// get the data all together to not call db twice
+		try {
+			Database.execute(query1, query2, query3);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(500);
+		}
 		
 		List<List<String>> result = query1.getResult();
 		List<List<String>> userInfo = query2.getResult();
@@ -215,7 +219,9 @@
 					            </div>
 					           	<button class="bluebutton" id="changeDate">Salva</button>
 					          <% } else if (vd.before(new Date()) && vac.get(3) != null) { %>
-					          	<button>Scarica</button>
+					          	<a href="http://localhost:8080/apsw_project/certificate?vid=<%= vac.get(0) %>">
+					          		<button>Scarica</button>
+					          	</a>
 					          <% } else { %>
 					          	<p style="color: red;">vaccinazione non avvenuta</p>
 					          <% } %>
@@ -232,7 +238,9 @@
 			                <p><%= vac.get(5) %>a dose</p>
 			                <br />
 			                <% if (vac.get(3) != null) { %>
-						          	<button>Scarica</button>
+							          <a href="http://localhost:8080/apsw_project/pages/user/certificate.jsp?vid=<%= vac.get(0) %>" target="_blank">
+						          		<button>Scarica</button>
+						          	</a>
 						          <% } else { %>
 					           		<p style="color: red;">vaccinazione non avvenuta</p>
 					           	<% } %>

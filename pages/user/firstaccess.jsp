@@ -73,7 +73,12 @@
 		SQLQuery query2 = new SQLQuery(insertBooking, paramsBooking);
 		SQLQuery query3 = new SQLQuery(insertCredentials, paramsCredentials);
 	
-		Database.execute(query1, query2, query3);
+		try {
+			Database.execute(query1, query2, query3);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(500);
+		}
 		
 		// control if some error happen on db execution. DO ONLY ONE QUERY
 	%>
@@ -100,7 +105,7 @@
         
           <div class="row justify-content-center">
             <div class="col-md-4 form-group mt-3 mt-md-0">
-              <input type="password" class="form-control" name="password" id="password" placeholder="password">
+              <input type="password" class="form-control" name="password" id="password" placeholder="password" required="required">
               <div class="validate"></div>
             </div>
           </div>

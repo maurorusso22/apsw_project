@@ -26,7 +26,7 @@
         <form action="http://localhost:8080/apsw_project/user" method="post" role="form" class="php-email-form">
           <div class="row justify-content-center">
             <div class="col-md-4 form-group mt-3 mt-md-0">
-              <input type="text" class="form-control" name="fiscalCode" id="fiscalCode" placeholder="Codice Fiscale" data-rule="cf" data-msg="codice fiscale invalido">
+              <input type="text" class="form-control" name="fiscalCode" id="fiscalCode" placeholder="Codice Fiscale" required="required" pattern="[A-Za-z0-9]{10,20}">
               <div class="validate"></div>
             </div>
           </div>
@@ -49,35 +49,6 @@
   <jsp:include page="../../partials/footer.jsp">
   	<jsp:param value="../../" name="initPath"/>
   </jsp:include>
-  
-  <script>
-//   	$(document).ready(function () {
-// 	  	$("#send-cf").click(function () {
-	  	    
-// 		  let cf = $("#cf").val();
-	
-// 	  	  if (!cf) {
-// 	  	      alert("Dati mancanti.")
-// 	  	  } else {
-// 	  	    $.ajax({
-// 	    	      url: "http://localhost:8080/apsw_project/user",
-// 	    	      type: "post", 
-// 	    	      data: {
-// 	    	          fiscalCode: cf
-// 	    	      },
-// 	    	      success: function(response) {
-// 	    	    	  console.log(response.fiscalCode)
-// 	    	        $("#myFC").html("my FC: " + response.fiscalCode)
-// 	    	        window.location.replace("./userhome.jsp?cf=" + response.fiscalCode);
-// 	    	      },
-// 	    	      error: function(err) {
-// 	    	        console.log(err)
-// 	    	      }
-// 	    	    });
-// 	  	  } 	 
-// 	  	})
-//   	});
-  </script>
 
 </body>
 </html>

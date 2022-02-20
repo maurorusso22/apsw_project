@@ -26,14 +26,14 @@
         <form action="http://localhost:8080/apsw_project/pages/doctor/dochome.jsp" method="post" role="form" class="php-email-form">
           <div class="row justify-content-center">
             <div class="col-md-4 form-group mt-3 mt-md-0">
-              <input type="text" class="form-control" name="fiscalCode" id="fiscalCode" placeholder="Codice Fiscale">
+              <input type="text" class="form-control" name="fiscalCode" id="fiscalCode" placeholder="Codice Fiscale" required="required">
               <div class="validate"></div>
             </div>
           </div>
           
           <div class="row justify-content-center">
             <div class="col-md-4 form-group mt-3 mt-md-0">
-              <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+              <input type="password" class="form-control" name="password" id="password" placeholder="Password" required="required">
               <div class="validate"></div>
             </div>
           </div>

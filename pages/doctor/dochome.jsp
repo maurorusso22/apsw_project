@@ -73,8 +73,12 @@
 		SQLQuery query2 = new SQLQuery(selectDoctorInfo, params);
 		SQLQuery query3 = new SQLQuery(selectVacInfo, params);
 	
-		Database.execute(query1, query2, query3);
-		// get the data all together to not call db twice
+		try {
+			Database.execute(query1, query2, query3);
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(500);
+		}
 		
 		List<List<String>> result = query1.getResult();
 		List<List<String>> doctorInfo = query2.getResult();
@@ -224,6 +228,8 @@
    	    	  if (err.status === 408) {
    	    		  alert("Sessione scaduta. Accedi nuovamente.")
    	   	      window.location.replace("http://localhost:8080/apsw_project/pages/doctor/access.jsp")
+   	    	  } else if (err.status === 404) {
+   	    		  alert("Errore: La vaccinazione inserita non esiste. Controllare la correttezza dell'identificativo.")
    	    	  } else {
    	        	alert("Qualcosa è andato storto.")
    	    	  }
