@@ -23,7 +23,7 @@ public class NewDoctorServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	public NewDoctorServlet() {
-		super();
+		super(); 
 	}
 
 	@Override
@@ -50,6 +50,7 @@ public class NewDoctorServlet extends HttpServlet {
 			String birthdate = request.getParameter("birthdate");
 			String fiscalCode = request.getParameter("fiscalCode").toUpperCase();
 			
+			// create password for the doctor
 			RandomString8 randomString = new RandomString8(8);
 			String password = randomString.getRandomString().toUpperCase();
 			HashedPassword hashPsw = null;

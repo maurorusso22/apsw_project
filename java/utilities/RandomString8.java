@@ -4,6 +4,8 @@ import java.util.Random;
 
 public class RandomString8 {
 	
+	// class for generating a 8-chars random string
+	
 	private final String value;
 	
 	public RandomString8(int n) {

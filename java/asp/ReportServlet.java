@@ -34,7 +34,7 @@ public class ReportServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		// get data from db
+		// get data from db: if vaccination has "not null" doctor field, it means vaccination has been done 
 		String sql = "SELECT * FROM Vaccination WHERE id_doctor IS NOT NULL ; ";
 		
 		List<Object> params = Arrays.asList();
@@ -49,10 +49,12 @@ public class ReportServlet extends HttpServlet {
 		
 		List<List<String>> vaccinations = query.getResult();
 		
+		// resonse as xml file
 		response.setContentType("text/xml; charset=UTF-8");
 		response.setHeader("Content-Disposition", "attachment; filename=\"report.xml\"");
 	    
 		try {
+			// building xml document
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 	        DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
 	        Document doc = docBuilder.newDocument();

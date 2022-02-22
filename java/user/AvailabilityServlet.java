@@ -18,6 +18,8 @@ public class AvailabilityServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final int hourLimit = 4;
 	
+	// check availability for a selected date
+	
 	public AvailabilityServlet() {
 		super();
 	}
@@ -96,7 +98,7 @@ public class AvailabilityServlet extends HttpServlet {
 		Boolean[] boolArray = new Boolean[10];
 		
 		for (int j = 0; j < 10; j++) {
-			boolArray[j] = counter[j] < hourLimit;
+			boolArray[j] = counter[j] < hourLimit; // max 4 vaccinations per hour
 		}
 				
 		var output = "{\"result\": [" + 

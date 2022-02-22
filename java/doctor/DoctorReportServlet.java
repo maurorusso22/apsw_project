@@ -42,6 +42,7 @@ public class DoctorReportServlet extends HttpServlet {
 			
 			String doctorFiscalCode = (String) docSession.getAttribute("id_doctor");
 
+			// get vaccinations executed by the doctor
 			String sql = "SELECT * FROM Vaccination WHERE id_doctor = ? ; ";
 			
 			List<Object> params = Arrays.asList(doctorFiscalCode);
@@ -56,10 +57,12 @@ public class DoctorReportServlet extends HttpServlet {
 			
 			List<List<String>> vaccinations = query.getResult();
 			
+			// response as xml file
 			response.setContentType("text/xml; charset=UTF-8");
 			response.setHeader("Content-Disposition", "attachment; filename=\"doc-report.xml\"");
 		    
 			try {
+				// building xml document
 				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		        DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
 		        Document doc = docBuilder.newDocument();

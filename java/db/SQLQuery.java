@@ -41,7 +41,6 @@ public class SQLQuery {
 	public void setResult(ResultSet rs) {
 		try {
 
-			// other metadata?
 			var columnCount = rs.getMetaData().getColumnCount();
 
 			while (rs.next()) {

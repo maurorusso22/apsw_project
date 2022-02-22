@@ -42,7 +42,7 @@ public class Database {
 					
 					queries[i].setResult(statement.getResultSet());
 					
-					// if select, it returns -1
+					// if select query, it returns -1
 					queries[i].setUpdateCount(statement.getUpdateCount());
 
 					statement.close();

@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpSession;
 public class BookingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	// book a new vaccination
 	
 	public BookingServlet() {
 		super();

@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class HashedPassword {
 	
+	// class for hashing a password
+	
 	private final String value;
 	
 	public HashedPassword(String password) throws UnsupportedEncodingException, NoSuchAlgorithmException {

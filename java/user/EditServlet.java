@@ -17,6 +17,8 @@ import jakarta.servlet.http.HttpSession;
 public class EditServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
+	// edit the date of a booked vaccination
+
 	public EditServlet() {
 		super();
 	}
@@ -30,7 +32,7 @@ public class EditServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+				
 		HttpSession userSession = request.getSession();
 		String sessionType = (String) userSession.getAttribute("type");
 
