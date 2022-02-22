@@ -78,7 +78,6 @@
 		try {
 			Database.execute(query1, query2, query3);
 		} catch (Exception e) {
-			e.printStackTrace();
 			response.sendError(500);
 		}
 		
@@ -112,7 +111,10 @@
 		Date yesterday = new Date(new Date().getTime() - 86400000);
 		Date lastVaccinationDate = new DateUtilities(lastVaccination.get(4)).getDate();
 		Boolean canUserBook;
-		if (vaccinations.size() >= 4) {
+		int lastDose = Integer.parseInt(lastVaccination.get(5));
+
+		if (lastDose == 4 && lastVaccination.get(3) != null) {
+			// if product is not null, it means the vaccination has been done successfully
 			canUserBook = false; // max 4 doses at the moment
 		} else {
 			canUserBook = lastVaccinationDate.before(yesterday); // no vaccination if one is still "on going"
@@ -127,7 +129,6 @@
 		}
 		
 		int nextId = Integer.parseInt(lastVaccination.get(0).split("_")[1]) + 1;
-		
 		
 		LocalDate today = LocalDate.now();
 		LocalDate futureDate = LocalDate.now().plusMonths(1);
@@ -219,7 +220,7 @@
 					            </div>
 					           	<button class="bluebutton" id="changeDate">Salva</button>
 					          <% } else if (vd.before(new Date()) && vac.get(3) != null) { %>
-					          	<a href="http://localhost:8080/apsw_project/certificate?vid=<%= vac.get(0) %>">
+							        <a href="http://localhost:8080/apsw_project/pages/user/certificate.jsp?vid=<%= vac.get(0) %>" target="_blank">
 					          		<button>Scarica</button>
 					          	</a>
 					          <% } else { %>
@@ -324,6 +325,7 @@
   	}
   	
   	function search(searchDate) {
+  		// check availability for that date
   		$.ajax({
    	      url: "http://localhost:8080/apsw_project/availability",
    	      type: "post", 

@@ -60,7 +60,8 @@
 		String vaccinationId = fiscalCode + "_1";
 				
 		String insertUser = "INSERT INTO Vac_User VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?); ";
-		// String insertBooking = "INSERT INTO Vaccination VALUES (?, ?, null, null, ?, ?); ";
+		// insertBooking success just if there are no more than 4 vaccinations for that datetime;
+		// this should always be like that, because when the user books a new vaccination, he just can select available datetimes.
 		String insertBooking = "INSERT INTO Vaccination SELECT ?, ?, null, null, ?, ? " +
 				"WHERE (SELECT ( SELECT COUNT(*) FROM Vaccination WHERE vac_date > ? AND vac_date < ? ) < 4 );";		
 		String insertCredentials = "INSERT INTO User_Credentials VALUES(?, ?); ";
@@ -76,11 +77,9 @@
 		try {
 			Database.execute(query1, query2, query3);
 		} catch (Exception e) {
-			e.printStackTrace();
 			response.sendError(500);
 		}
 		
-		// control if some error happen on db execution. DO ONLY ONE QUERY
 	%>
 	
   <jsp:include page="../../partials/header.jsp">

@@ -63,14 +63,13 @@
 			Database.execute(query1, query2);
 			// get the data all together to not call db twice
 		} catch (Exception e) {
-			e.printStackTrace();
 			response.sendError(500);
 		}
 		
 		List<List<String>> result = query1.getResult();
 		List<List<String>> doctors = query2.getResult();
 
-		
+		// check password
 		if (query1.getStatus() == Database.RESULT && !result.isEmpty()) {
 			String dbHashedPsw = result.get(0).get(1);
 			

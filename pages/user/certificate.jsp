@@ -50,12 +50,9 @@
 			try {
 				Database.execute(query);
 			} catch (Exception e) {
-				e.printStackTrace();
 				response.sendError(500);
 			}
-			
-			// if no error on db
-			
+						
 			List<List<String>> result = query.getResult();
 			List<String> vaccination = result.get(0);
 	%>

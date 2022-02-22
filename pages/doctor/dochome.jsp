@@ -75,8 +75,8 @@
 	
 		try {
 			Database.execute(query1, query2, query3);
+			// get the data all together to not call db twice
 		} catch (Exception e) {
-			e.printStackTrace();
 			response.sendError(500);
 		}
 		
@@ -84,6 +84,7 @@
 		List<List<String>> doctorInfo = query2.getResult();
 		List<List<String>> vaccinations = query3.getResult();
 
+		// check password
 		if (query1.getStatus() == Database.RESULT && !result.isEmpty()) {
 			String dbHashedPsw = result.get(0).get(1);
 			
@@ -142,7 +143,6 @@
 									                <option value="moderna">Moderna</option>
 									                <option value="janssen">Janssen</option>
 		 							                <option value="astrazeneca">Astrazeneca</option>
-		 							                <option value="novavax">Novavax</option>
 									              </select>
 									              <div class="validate"></div>
 									            </div>

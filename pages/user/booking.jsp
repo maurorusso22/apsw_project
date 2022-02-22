@@ -135,6 +135,7 @@
   
   <script>
   	function search(searchDate) {
+  		// check availability for that date
   		$.ajax({
    	      url: "http://localhost:8080/apsw_project/availability",
    	      type: "post", 
