@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Vac_User (
     birthdate DATE NOT NULL,
     gender INT NOT NULL, -- 1: male, 2: female, 3: other
     email VARCHAR(60) NOT NULL,
-    phone VARCHAR(15) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
     category VARCHAR(50)
 );
 
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Doctor (
 );
 
 CREATE TABLE IF NOT EXISTS Vaccination (
-    id_vaccination VARCHAR(36) PRIMARY KEY,
+    id_vaccination VARCHAR(20) PRIMARY KEY,
     id_user VARCHAR(16) NOT NULL,
     id_doctor VARCHAR(16), -- null when booked, not-null when vaccination is done
     product VARCHAR(40), -- null when booked, not-null when vaccination is done
